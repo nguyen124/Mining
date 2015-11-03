@@ -11,8 +11,7 @@ package mining.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.maxshare.model.Entity;
-import com.maxshare.service.GraphService;
+import mining.service.GraphService;
 
 public class MatrixGraph {
 	private double[][] matrix;
