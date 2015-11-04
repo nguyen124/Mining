@@ -1,5 +1,6 @@
 package mining.graph;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,9 +41,19 @@ public class Entity {
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
-		String temp1 = name.toLowerCase();
-		String temp2 = ((Entity) obj).getName();
-		return temp1.equals(temp2);
+		String temp = ((Entity) obj).getName();
+		boolean tf = name.equals(temp);
+		return tf;
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		int hash = 7;
+		for (int i = 0; i < name.length(); i++) {
+			hash = hash * 31 + name.charAt(i);
+		}
+		return hash;
 	}
 
 	public int getLowerBound() {
