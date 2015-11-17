@@ -23,12 +23,12 @@ import mining.entity.Entity;
 public class GraphService {
 	// public static final float ARTICLES = getAllWikiArticles();
 
-	public static SimpleWeightedGraph<String, DefaultWeightedEdge> buildGraph(
-			List<Entity> entites) {
+	public static SimpleWeightedGraph<String, DefaultWeightedEdge> buildGraph(List<Entity> entites) {
 		SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(
 				DefaultWeightedEdge.class);
-		Map<String, Set<String>> cachedPagelinks = new HashMap<String, Set<String>>();
-
+		// Map<String, List<String>> cachedPagelinks = new HashMap<String,
+		// List<String>>();
+		Map<String, Double> cached = new HashMap<>();
 		for (int i = 0; i < entites.size(); i++) {
 			List<String> candidates1 = entites.get(i).getCandidates();
 			/*
@@ -45,25 +45,48 @@ public class GraphService {
 						 */
 						String can1 = candidates1.get(l);
 						String can2 = candidates2.get(m);
-						Set<String> pagelinks1 = cachedPagelinks.get(can1);
-						Set<String> pagelinks2 = cachedPagelinks.get(can2);
-						if (pagelinks1 == null) {
-							pagelinks1 = DictionaryService.getPagelinks(can1);
-							cachedPagelinks.put(can1, pagelinks1);
-						}
-						if (pagelinks2 == null) {
-							pagelinks2 = DictionaryService.getPagelinks(can2);
-							cachedPagelinks.put(can2, pagelinks2);
-						}
+						List<String> pagelinks1;// = cachedPagelinks.get(can1);
+						List<String> pagelinks2;// = cachedPagelinks.get(can2);
+						// if (pagelinks1 == null) {
+						// pagelinks1 =
+						// DictionaryService.getPagelinks(can1);
+						pagelinks1 = EntityService.getListOfHyperLinks(can1);
+						// cachedPagelinks.put(can1, pagelinks1);
+						// }
+						// if (pagelinks2 == null) {
+						pagelinks2 = EntityService.getListOfHyperLinks(can2);
+						// cachedPagelinks.put(can2, pagelinks2);
+						// }
+						// Calculate Topical Relatedness for between 2
+						// candidates
+						double topicalRelate = EntityService.calculateTopicalRelatedness(pagelinks1, pagelinks2);
 
-						double topicalRelate = DictionaryService.calculateTR(
-								pagelinks1, pagelinks2);
 						if (topicalRelate != 0) {
 							graph.addVertex(can1);
 							graph.addVertex(can2);
-							DefaultWeightedEdge edge = graph
-									.addEdge(can1, can2);
+							DefaultWeightedEdge edge = graph.addEdge(can1, can2);
+							// The weight between 2 nodes is the Topical
+							// Relatedness value
 							graph.setEdgeWeight(edge, topicalRelate);
+							// Calculate the Prior Probability for candidate
+							if (!cached.containsKey("PP:" + can1)) {
+								double can1PP = EntityService.calculatePriorProbability(can1, entites.get(i));
+								cached.put("PP:" + can1, can1PP);
+							}
+							if (!cached.containsKey("PP:" + can2)) {
+								double can2PP = EntityService.calculatePriorProbability(can2, entites.get(j));
+								cached.put("PP:" + can2, can2PP);
+							}
+							// Calculate the Topical Coherence for candidate
+							if (!cached.containsKey("TC:" + can1)) {
+								double can1TC = EntityService.calculateTopicalCoherence(can1, entites, j);
+								cached.put("TC:" + can1, can1TC);
+							}
+							if (!cached.containsKey("TC:" + can2)) {
+								double can2TC = EntityService.calculateTopicalCoherence(can2, entites, i);
+								cached.put("TC:" + can2, can2TC);
+							}
+
 						}
 
 					}
@@ -99,15 +122,6 @@ public class GraphService {
 	 * 
 	 * }
 	 */
-	public static int countUnion(Entity en1, Entity en2) {
-		en1.getCandidates().addAll(en2.getCandidates());
-		return en1.getCandidates().size();
-	}
-
-	public static int countIntersection(Entity en1, Entity en2) {
-		en1.getCandidates().retainAll(en2.getCandidates());
-		return en1.getCandidates().size();
-	}
 
 	/*
 	 * public static double countTR(Entity en1, Entity en2) { int sizeU1 =
@@ -123,27 +137,5 @@ public class GraphService {
 	 * " - IntersectSize" + sizeIntersect + " - TotalArticles" + ARTICLES +
 	 * " - MinSize(U1,U2)" + Math.min(sizeU1, sizeU2)); return result; }
 	 */
-
-	public static double countPriorProbability(Entity en) {
-		/*
-		 * double countTotal = 0; double pp = 0; for (String e :
-		 * en.getCandidates()) { countTotal += e.getCandidates().size(); } pp =
-		 * en.getCandidates().size() / countTotal;
-		 * System.out.println("Prior Probability: " + pp);
-		 */
-		return 0;
-	}
-
-	public static double countCoherence(int noOfMentionedEntities,
-			List<Entity> sourceOfEntities, Entity candidateEntity) {
-		double totalTR = 0;
-		double coh = 0;
-		for (Entity e : sourceOfEntities) {
-			// totalTR += countTR(e, candidateEntity);
-		}
-		coh = totalTR / (noOfMentionedEntities - 1);
-		System.out.println("TotalTR: " + coh);
-		return coh;
-	}
 
 }

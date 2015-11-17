@@ -1,23 +1,12 @@
 package mining.main;
 
-import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
-
-import org.jgrapht.WeightedGraph;
-import org.jgrapht.generate.WeightedGraphGenerator;
-
-import com.sun.javafx.geom.Edge;
-
-import mining.dbconnection.DBConnection;
-
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-
 import mining.entity.Entity;
 import mining.service.DictionaryService;
+import mining.service.EntityService;
 import mining.service.GraphService;
 
 public class MainProgram {
@@ -25,9 +14,10 @@ public class MainProgram {
 	public static void main(String[] args) {
 
 		List<Entity> entites = new ArrayList<Entity>();
-		Entity sun = DictionaryService.buildEntity("Sun");
-		Entity mcNealy = DictionaryService.buildEntity("McNealy");
-
+		// Entity sun = DictionaryService.buildEntity("Sun");
+		// Entity mcNealy = DictionaryService.buildEntity("McNealy");
+		Entity sun = EntityService.buildEntity("Sun");
+		Entity mcNealy = EntityService.buildEntity("McNealy");
 		/*
 		 * Entity bulls = DictionaryService.buildEntity("Bulls"); Entity scott =
 		 * DictionaryService.buildEntity("Scott"); Entity tysonChandler =
@@ -41,8 +31,7 @@ public class MainProgram {
 		 * entites.add(bulls); entites.add(scott); entites.add(tysonChandler);
 		 * entites.add(tonyAllen); entites.add(nba);
 		 */
-		SimpleWeightedGraph<String, DefaultWeightedEdge> graph = GraphService
-				.buildGraph(entites);
+		SimpleWeightedGraph<String, DefaultWeightedEdge> graph = GraphService.buildGraph(entites);
 		int a = 0;
 		/*
 		 * SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new

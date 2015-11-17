@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="I:/SpringWorkspace/Mining/lib/postgresql-9.4-1205.jdbc4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="I:/SpringWorkspace/Mining/lib/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="I:/SpringWorkspace/Mining/lib/jedis-2.4.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

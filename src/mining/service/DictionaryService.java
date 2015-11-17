@@ -92,25 +92,20 @@ public class DictionaryService {
 		return entity;
 	}
 
-	public static double calculateTR(Set<String> entity1Pagelinks,
-			Set<String> entity2Pagelinks) {
+	public static double calculateTR(Set<String> entity1Pagelinks, Set<String> entity2Pagelinks) {
 		int minPagelinksSize;
 		int maxPagelinksSize;
 		int intersectPagelinksSize;
 		double topicalRelation = 0;
 		Set<String> intersect = new HashSet<String>();
 		intersect.addAll(entity1Pagelinks);
-		minPagelinksSize = Math.min(entity1Pagelinks.size(),
-				entity2Pagelinks.size());
-		maxPagelinksSize = Math.max(entity1Pagelinks.size(),
-				entity2Pagelinks.size());
+		minPagelinksSize = Math.min(entity1Pagelinks.size(), entity2Pagelinks.size());
+		maxPagelinksSize = Math.max(entity1Pagelinks.size(), entity2Pagelinks.size());
 
 		intersect.retainAll(entity2Pagelinks);
 		intersectPagelinksSize = intersect.size();
 		if (intersectPagelinksSize != 0) {
-			topicalRelation = 1
-					- (Math.log(maxPagelinksSize) - Math
-							.log(intersectPagelinksSize))
+			topicalRelation = 1 - (Math.log(maxPagelinksSize) - Math.log(intersectPagelinksSize))
 					/ (Math.log(COUNT_ALL_WP) - Math.log(minPagelinksSize));
 		}
 		return topicalRelation;
