@@ -31,7 +31,9 @@ public class MainProgram {
 		 * entites.add(bulls); entites.add(scott); entites.add(tysonChandler);
 		 * entites.add(tonyAllen); entites.add(nba);
 		 */
-		SimpleWeightedGraph<String, DefaultWeightedEdge> graph = GraphService.buildGraph(entites);
+
+		SimpleWeightedGraph<String, DefaultWeightedEdge> graph = GraphService
+				.buildGraph(entites);
 		int a = 0;
 		/*
 		 * SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new
