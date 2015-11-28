@@ -25,6 +25,9 @@ public class GraphService {
 		Map<String, Double> cached = new HashMap<>();
 		List<String> possibleEntities = EntityService
 				.interativeSubstitution(entities);
+		System.out.println("The possible mapping entities are: "
+				+ possibleEntities.toString());
+
 		for (int i = 0; i < entities.size(); i++) {
 			List<String> candidates1 = entities.get(i).getCandidates();
 			/*
@@ -86,12 +89,13 @@ public class GraphService {
 													entities.get(i));
 									cached.put("PP:" + can1, can1PP);
 								}
-								if (!cached.containsKey("PP:" + can2)) {
-									double can2PP = EntityService
-											.calculatePriorProbability(can2,
-													entities.get(j));
-									cached.put("PP:" + can2, can2PP);
-								}
+								/*
+								 * if (!cached.containsKey("PP:" + can2)) {
+								 * double can2PP = EntityService
+								 * .calculatePriorProbability(can2,
+								 * entities.get(j)); cached.put("PP:" + can2,
+								 * can2PP); }
+								 */
 								// Calculate Context Similarity
 								String entityContext = "McNealy finished he was pretty much squarely in camp of Sun";
 								if (!cached.containsKey("CS:" + can1)) {
@@ -100,12 +104,13 @@ public class GraphService {
 													entityContext);
 									cached.put("CS:" + can1, can1CS);
 								}
-								if (!cached.containsKey("CS:" + can2)) {
-									double can2CS = EntityService
-											.calculateContextSimilarity(can2,
-													entityContext);
-									cached.put("CS:" + can2, can2CS);
-								}
+								/*
+								 * if (!cached.containsKey("CS:" + can2)) {
+								 * double can2CS = EntityService
+								 * .calculateContextSimilarity(can2,
+								 * entityContext); cached.put("CS:" + can2,
+								 * can2CS); }
+								 */
 								// Calculate the Topical Coherence for candidate
 
 								if (!cached.containsKey("TC:" + can1)) {
@@ -114,12 +119,13 @@ public class GraphService {
 													possibleEntities);
 									cached.put("TC:" + can1, can1TC);
 								}
-								if (!cached.containsKey("TC:" + can2)) {
-									double can2TC = EntityService
-											.calculateTopicalCoherence(can2, j,
-													possibleEntities);
-									cached.put("TC:" + can2, can2TC);
-								}
+								/*
+								 * if (!cached.containsKey("TC:" + can2)) {
+								 * double can2TC = EntityService
+								 * .calculateTopicalCoherence(can2, j,
+								 * possibleEntities); cached.put("TC:" + can2,
+								 * can2TC); }
+								 */
 
 								// calcuate the interest score
 								if (!cached.containsKey("IS:" + can1)) {
@@ -132,6 +138,37 @@ public class GraphService {
 									System.out.println("Interest Score of: "
 											+ can1 + " is: " + interestScore);
 									cached.put("IS:" + can1, interestScore);
+								}
+								/*
+								 * if (!cached.containsKey("IS:" + can2)) {
+								 * double interestScore = EntityService.alpha
+								 * cached.get("PP:" + can2) + EntityService.beta
+								 * cached.get("CS:" + can2) +
+								 * EntityService.gamma cached.get("TC:" + can2);
+								 * System.out.println("Interest Score: " + can2
+								 * + " is: " + interestScore); cached.put("IS:"
+								 * + can2, interestScore); }
+								 */
+
+								if (!cached.containsKey("PP:" + can2)) {
+									double can2PP = EntityService
+											.calculatePriorProbability(can2,
+													entities.get(j));
+									cached.put("PP:" + can2, can2PP);
+								}
+
+								if (!cached.containsKey("CS:" + can2)) {
+									double can2CS = EntityService
+											.calculateContextSimilarity(can2,
+													entityContext);
+									cached.put("CS:" + can2, can2CS);
+								}
+
+								if (!cached.containsKey("TC:" + can2)) {
+									double can2TC = EntityService
+											.calculateTopicalCoherence(can2, j,
+													possibleEntities);
+									cached.put("TC:" + can2, can2TC);
 								}
 								if (!cached.containsKey("IS:" + can2)) {
 									double interestScore = EntityService.alpha
