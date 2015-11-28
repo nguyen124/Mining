@@ -1,6 +1,7 @@
 package mining.service;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -25,9 +26,9 @@ import redis.clients.jedis.Jedis;
 public class EntityService {
 	public static double COUNT_ALL_WP = 3381716;
 	public static double COUNT_ALL_CATEGORIES_RECORDS = 10021327;
-	public static double alpha = 0.3;
-	public static double beta = 0.4;
-	public static double gamma = 0.4;
+	public static double alpha = 0.2;
+	public static double beta = 0.6;
+	public static double gamma = 0.2;
 	public static double lamda = 0.4;
 
 	// public static int COUNT_PAGELINKS = 81835577;
@@ -71,24 +72,30 @@ public class EntityService {
 
 	public static double calculateTopicalRelatedness(
 			List<String> entity1Pagelinks, List<String> entity2Pagelinks) {
-		int minPagelinksSize;
-		int maxPagelinksSize;
+		// int minPagelinksSize;
+		// int maxPagelinksSize;
 		int intersectPagelinksSize;
 		double topicalRelation = 0;
 		Set<String> intersect = new HashSet<String>();
+		entity1Pagelinks.remove("");
+		entity2Pagelinks.remove("");
 		intersect.addAll(entity1Pagelinks);
-		minPagelinksSize = Math.min(entity1Pagelinks.size(),
-				entity2Pagelinks.size());
-		maxPagelinksSize = Math.max(entity1Pagelinks.size(),
-				entity2Pagelinks.size());
+		// minPagelinksSize = Math.min(entity1Pagelinks.size(),
+		// entity2Pagelinks.size());
+		// maxPagelinksSize = Math.max(entity1Pagelinks.size(),
+		// entity2Pagelinks.size());
 
 		intersect.retainAll(entity2Pagelinks);
 		intersectPagelinksSize = intersect.size();
 		if (intersectPagelinksSize != 0) {
-			topicalRelation = 1
-					- (Math.log(maxPagelinksSize) - Math
-							.log(intersectPagelinksSize))
-					/ (Math.log(COUNT_ALL_WP) - Math.log(minPagelinksSize));
+			/*
+			 * topicalRelation = (Math.log(maxPagelinksSize) - Math
+			 * .log(intersectPagelinksSize)) / (Math.log(COUNT_ALL_WP) -
+			 * Math.log(minPagelinksSize));
+			 */
+			topicalRelation = Math.log(2 * intersectPagelinksSize)
+					/ (Math.log(entity1Pagelinks.size()) + Math
+							.log(entity2Pagelinks.size()));
 		}
 		return topicalRelation;
 	}
@@ -105,9 +112,15 @@ public class EntityService {
 		// TODO Auto-generated method stub
 		Jedis jedis = new Jedis("localhost");
 		// get entity page
-		List<String> lnks = jedis.lrange("L:" + can, 0, -1);
+		Set<String> lnks = new TreeSet<String>();
+		lnks.addAll(jedis.lrange("L:" + can, 0, -1));
+		lnks.addAll(jedis.lrange("R:" + can, 0, -1));
+		lnks.addAll(jedis.lrange("T:" + can, 0, -1));
+		lnks.addAll(jedis.lrange("D:" + can, 0, -1));
 		jedis.close();
-		return lnks;
+		ArrayList<String> result = new ArrayList<String>();
+		result.addAll(lnks);
+		return result;
 	}
 
 	/*
@@ -218,13 +231,41 @@ public class EntityService {
 			String contextString) {
 		HashMap<String, Integer> wordsCount = new HashMap<String, Integer>();
 		for (String str : contextString.split(" ")) {
-			if (wordsCount.get(str) == null) {
-				wordsCount.put(str, 1);
-			} else {
-				wordsCount.put(str, wordsCount.get(str) + 1);
+			if (!isStopWord(str)) {
+				if (wordsCount.get(str) == null) {
+					wordsCount.put(str, 1);
+				} else {
+					wordsCount.put(str, wordsCount.get(str) + 1);
+				}
 			}
 		}
 		return wordsCount;
+	}
+
+	private static boolean isStopWord(String str) {
+		// TODO Auto-generated method stub
+		String csvFile = "I:/tempdata/stopwords.txt";
+		BufferedReader br = null;
+		List<String> stopWords = new ArrayList<String>();
+		String line = "";
+		try {
+			br = new BufferedReader(new FileReader(csvFile));
+			while ((line = br.readLine()) != null) {
+				stopWords.add(line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return stopWords.contains(str);
 	}
 
 	public static Double calculateContextSimilarity(String candidate,
