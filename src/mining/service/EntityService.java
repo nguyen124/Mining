@@ -1,6 +1,7 @@
 package mining.service;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -244,7 +245,7 @@ public class EntityService {
 
 	private static boolean isStopWord(String str) {
 		// TODO Auto-generated method stub
-		String csvFile = "I:/tempdata/stopwords.txt";
+		String csvFile = "stopwords.txt";
 		BufferedReader br = null;
 		List<String> stopWords = new ArrayList<String>();
 		String line = "";
