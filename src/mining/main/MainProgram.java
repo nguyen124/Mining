@@ -10,14 +10,24 @@ import mining.service.EntityService;
 import mining.service.GraphService;
 
 public class MainProgram {
+	public static String tweet = "Ronaldo is such a nightmare for Real";
+	public static String en1 = "Messi";
+	public static String en2 = "Real";
 
 	public static void main(String[] args) {
 
 		List<Entity> entites = new ArrayList<Entity>();
 		// Entity sun = DictionaryService.buildEntity("Sun");
 		// Entity mcNealy = DictionaryService.buildEntity("McNealy");
-		Entity sun = EntityService.buildEntity("Sun");
-		Entity mcNealy = EntityService.buildEntity("McNealy");
+		// Entity sun = EntityService.buildEntity("Sun");
+		// Entity mcNealy = EntityService.buildEntity("McNealy");
+		Entity entity1 = EntityService.buildEntity(en1);
+		Entity entity2 = EntityService.buildEntity(en2);
+		if (entity1.getCandidates().size() < 1
+				|| entity2.getCandidates().size() < 1) {
+			System.out.println("Can't recognize entity");
+			return;
+		}
 		/*
 		 * Entity bulls = DictionaryService.buildEntity("Bulls"); Entity scott =
 		 * DictionaryService.buildEntity("Scott"); Entity tysonChandler =
@@ -25,8 +35,10 @@ public class MainProgram {
 		 * DictionaryService.buildEntity("Tony Allen"); Entity nba =
 		 * DictionaryService.buildEntity("NBA");
 		 */
-		entites.add(sun);
-		entites.add(mcNealy);
+		// entites.add(sun);
+		// entites.add(mcNealy);
+		entites.add(entity1);
+		entites.add(entity2);
 		/*
 		 * entites.add(bulls); entites.add(scott); entites.add(tysonChandler);
 		 * entites.add(tonyAllen); entites.add(nba);

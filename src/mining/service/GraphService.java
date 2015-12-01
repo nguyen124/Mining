@@ -12,6 +12,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import mining.entity.Entity;
+import mining.main.MainProgram;
 
 public class GraphService {
 	// public static final float ARTICLES = getAllWikiArticles();
@@ -97,10 +98,12 @@ public class GraphService {
 								 * can2PP); }
 								 */
 								// Calculate Context Similarity
-								String entityContext = "McNealy finished he was pretty much squarely in camp of Sun";
+								// String entityContext =
+								// "McNealy finished he was pretty much squarely in camp of Sun";
+								String entityContext = MainProgram.tweet;
 								if (!cached.containsKey("CS:" + can1)) {
 									double can1CS = EntityService
-											.calculateContextSimilarity(can1,
+											.calculateContextSimilarity(can1+" "+can2,
 													entityContext);
 									cached.put("CS:" + can1, can1CS);
 								}
@@ -159,7 +162,7 @@ public class GraphService {
 
 								if (!cached.containsKey("CS:" + can2)) {
 									double can2CS = EntityService
-											.calculateContextSimilarity(can2,
+											.calculateContextSimilarity(can1+ " "+ can2,
 													entityContext);
 									cached.put("CS:" + can2, can2CS);
 								}
